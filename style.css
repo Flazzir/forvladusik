@@ -1,0 +1,84 @@
+import { useState } from 'react'
+import { motion } from "framer-motion"
+
+export default function GreetingWindow() {
+  const [showComments, setShowComments] = useState<string[]>([])
+  const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 })
+  const [gifUrl, setGifUrl] = useState<string>("https://i.pinimg.com/originals/4d/bb/bc/4dbbbc21f77c6cd0b62a84a084198fcd.gif")
+  const [showSuccess, setShowSuccess] = useState(false)
+
+  const allComments = [
+    "почему нет... я же буду плакать",
+    "ну пожалуйста...",
+    "ну Влада..",
+    "может всё-таки да..?",
+    "ты лучшая",
+    "ну нажми уже..",
+    "ну Владусь(",
+    "точно туда тыкаешь?",
+    "я плакать блин"
+  ];
+
+  const handleNoClick = () => {
+    const newComments = [...showComments];
+    const randomComment = allComments[Math.floor(Math.random() * allComments.length)];
+    newComments.push(randomComment);
+    setShowComments(newComments);
+
+    // Randomly change button position on every click
+    const maxX = window.innerWidth - 100; // 100 is the button width
+    const maxY = window.innerHeight - 100; // 100 is the button height
+    const randomX = Math.floor(Math.random() * maxX);
+    const randomY = Math.floor(Math.random() * maxY);
+    setButtonPosition({ x: randomX, y: randomY });
+
+    // Change GIF URL to the new one
+    setGifUrl("https://i.pinimg.com/originals/ac/14/53/ac1453a84d288ab088a15fc453549d7c.gif");
+  }
+
+  const handleYesClick = () => {
+    setShowSuccess(true);
+    setGifUrl("https://i.pinimg.com/originals/4d/bb/bc/4dbbbc21f77c6cd0b62a84a084198fcd.gif");
+  }
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-cover bg-center" style={{ backgroundImage: `url('https://i.pinimg.com/originals/6f/40/01/6f40010dbf9ad18584707eb0fafe4a9b.gif')`, backdropFilter: 'blur(50px)' }}>
+      <div className="bg-white bg-opacity-50 p-8 rounded-lg shadow-lg w-full max-w-md space-y-4">
+        {showSuccess ? (
+          <div className="flex flex-col items-center space-y-4">
+            <h1 className="text-2xl font-bold text-center text-red-500 drop-shadow-lg">Урааа :3</h1>
+            <div className="w-full h-64 flex items-center justify-center">
+              <img src={gifUrl} alt="Heart GIF" className="w-full h-full object-contain" />
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center space-y-4">
+            <h1 className="text-2xl font-bold text-center text-red-500 drop-shadow-lg">Влада, будешь моей веном?</h1>
+            <div className="w-full h-64 flex items-center justify-center">
+              <img src={gifUrl} alt="Heart GIF" className="w-full h-full object-contain" />
+            </div>
+            <div className="flex space-x-4 justify-center">
+              <button
+                onClick={handleYesClick}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300 drop-shadow-lg"
+              >
+                Да
+              </button>
+              <motion.button
+                whileTap={{ scale: 1.2 }}
+                onClick={handleNoClick}
+                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300 drop-shadow-lg"
+                style={{ position: 'absolute', left: buttonPosition.x, top: buttonPosition.y }}
+              >
+                Нет
+              </motion.button>
+            </div>
+            {showComments.map((comment, index) => (
+              <p key={index} className="text-red-500 text-center drop-shadow-lg">{comment}</p>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
